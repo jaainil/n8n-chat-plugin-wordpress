@@ -5,7 +5,12 @@ Plugin URI: https://github.com/jaainil/n8n-chat-plugin-wordpress
 Description: ChatGPT-style interface for N8N AI Agent
 Version: 1.0
 Author: Jainil Prajapati
+License: GPL-2.0-or-later
 Text Domain: n8n-chatbot
+Domain Path: /languages
+Requires at least: 5.0
+Tested up to: 6.8
+Requires PHP: 7.4
 */
 
 // Security checks
@@ -69,15 +74,15 @@ function oacb_settings_page() {
 // Register settings
 add_action('admin_init', 'oacb_register_settings');
 function oacb_register_settings() {
-    register_setting('oacb_settings_group', 'oacb_webhook_url');
-    register_setting('oacb_settings_group', 'oacb_bot_name');
-    register_setting('oacb_settings_group', 'oacb_welcome_message');
-    register_setting('oacb_settings_group', 'oacb_chat_icon');
-    register_setting('oacb_settings_group', 'oacb_bot_thumb');
-    register_setting('oacb_settings_group', 'oacb_position');
-    register_setting('oacb_settings_group', 'oacb_enable_popup');
-    register_setting('oacb_settings_group', 'oacb_popup_delay');
-    register_setting('oacb_settings_group', 'oacb_popup_size');
+    register_setting('oacb_settings_group', 'oacb_webhook_url', 'esc_url_raw');
+    register_setting('oacb_settings_group', 'oacb_bot_name', 'sanitize_text_field');
+    register_setting('oacb_settings_group', 'oacb_welcome_message', 'sanitize_textarea_field');
+    register_setting('oacb_settings_group', 'oacb_chat_icon', 'esc_url_raw');
+    register_setting('oacb_settings_group', 'oacb_bot_thumb', 'esc_url_raw');
+    register_setting('oacb_settings_group', 'oacb_position', 'sanitize_text_field');
+    register_setting('oacb_settings_group', 'oacb_enable_popup', 'sanitize_text_field');
+    register_setting('oacb_settings_group', 'oacb_popup_delay', 'absint');
+    register_setting('oacb_settings_group', 'oacb_popup_size', 'sanitize_text_field');
     
     // Add settings sections
     add_settings_section('oacb_general_section', 'General Settings', 'oacb_general_section_callback', 'oacb-settings');
@@ -262,7 +267,7 @@ function oacb_handle_message(WP_REST_Request $request) {
         ]);
 
         if (is_wp_error($response)) {
-            throw new Exception(__('Service unavailable', 'openai-chatbot'));
+            throw new Exception(__('Service unavailable', 'n8n-chatbot'));
         }
 
         $body = wp_remote_retrieve_body($response);
@@ -270,7 +275,7 @@ function oacb_handle_message(WP_REST_Request $request) {
 
         return [
             'success' => true,
-            'response' => wp_kses_post($data['response'] ?? __('No response received', 'openai-chatbot'))
+            'response' => wp_kses_post($data['response'] ?? __('No response received', 'n8n-chatbot'))
         ];
 
     } catch (Exception $e) {
@@ -280,12 +285,15 @@ function oacb_handle_message(WP_REST_Request $request) {
 
 // Generate session ID
 function oacb_generate_session_id() {
-    if (!isset($_COOKIE['oacb_session_id'])) {
+    $session_id = '';
+    if (isset($_COOKIE['oacb_session_id'])) {
+        $session_id = sanitize_text_field(wp_unslash($_COOKIE['oacb_session_id']));
+    }
+    if (empty($session_id)) {
         $session_id = bin2hex(random_bytes(16));
         setcookie('oacb_session_id', $session_id, time() + 3600, '/', '', is_ssl(), true);
-        return $session_id;
     }
-    return $_COOKIE['oacb_session_id'];
+    return $session_id;
 }
 
 // Add chat interface to footer
