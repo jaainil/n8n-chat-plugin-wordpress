@@ -1,0 +1,38 @@
+<div class="oacb-chat-container">
+    <!-- Chat icon will be added here by JavaScript -->
+
+    <div id="oacb-chat-window" class="oacb-chat-window">
+        <div class="oacb-chat-header">
+            <img src="<?php echo esc_url(get_option('oacb_bot_thumb', OACB_PLUGIN_URL . 'public/bot-thumb.png')); ?>"
+                class="oacb-bot-thumb" alt="<?php echo esc_attr(get_option('oacb_bot_name', 'Nina')); ?>">
+            <h3>
+                <?php echo esc_html(get_option('oacb_bot_name', 'Nina')); ?>
+            </h3>
+        </div>
+        <div class="oacb-messages-container" id="oacb-messages"></div>
+        <div class="oacb-input-container">
+            <input type="text" class="oacb-input" id="oacb-message-input" placeholder="Type your message...">
+            <button class="oacb-send-button" id="oacb-send-button">Send</button>
+        </div>
+    </div>
+
+    <!-- Welcome Popup -->
+    <div id="oacb-welcome-popup" class="oacb-welcome-popup" style="display: none;">
+        <div class="oacb-popup-content">
+            <div class="oacb-popup-header">
+                <img src="<?php echo esc_url(get_option('oacb_bot_thumb', OACB_PLUGIN_URL . 'public/bot-thumb.png')); ?>"
+                    class="oacb-popup-bot-thumb" alt="<?php echo esc_attr(get_option('oacb_bot_name', 'Nina')); ?>">
+                <h4>
+                    <?php echo esc_html(get_option('oacb_bot_name', 'Nina')); ?>
+                </h4>
+                <button class="oacb-popup-close">&times;</button>
+            </div>
+            <div class="oacb-popup-body">
+                <p>
+                    <?php echo esc_html(get_option('oacb_welcome_message', 'Hi! What are you looking for?')); ?>
+                </p>
+                <button class="oacb-popup-start-chat">Start Chat</button>
+            </div>
+        </div>
+    </div>
+</div>
