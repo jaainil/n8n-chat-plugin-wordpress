@@ -16,7 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const popupStartChatBtn = document.querySelector(".oacb-popup-start-chat");
 
   let isOpen = false;
-  let popupShown = false;
+
+  // Check localStorage to see if popup has been shown before
+  const popupStorageKey = "oacb_popup_shown";
+  let popupShown = localStorage.getItem(popupStorageKey) === "true";
 
   // Set position
   chatContainer.className = `oacb-chat-container ${oacbConfig.position}`;
@@ -51,6 +54,8 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => {
         welcomePopup.style.display = "block";
         popupShown = true;
+        // Store in localStorage that popup has been shown
+        localStorage.setItem(popupStorageKey, "true");
       }, parseInt(oacbConfig.popupDelay) * 1000);
     }
   }
@@ -72,11 +77,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // Close popup
   popupCloseBtn.addEventListener("click", () => {
     welcomePopup.style.display = "none";
+    // Store in localStorage that popup has been closed
+    localStorage.setItem(popupStorageKey, "true");
   });
 
   // Start chat from popup
   popupStartChatBtn.addEventListener("click", () => {
     welcomePopup.style.display = "none";
+    // Store in localStorage that popup has been interacted with
+    localStorage.setItem(popupStorageKey, "true");
     isOpen = true;
     chatWindow.style.display = "block";
     messageInput.focus();

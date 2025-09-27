@@ -6,7 +6,7 @@ Description: ChatGPT-style interface for N8N AI Agent
 Version: 1.0
 Author: Jainil Prajapati
 License: GPL-2.0-or-later
-Text Domain: n8n-chatbot
+Text Domain: wordpress-n8n-chatbot-main
 Domain Path: /languages
 Requires at least: 5.0
 Tested up to: 6.8
@@ -31,8 +31,8 @@ function oacb_check_requirements() {
     }
     
     // Set default options
-    add_option('oacb_webhook_url', 'https://webhooks.aiservers.com.br/webhook/7ca83640-6c8c-4993-9917-0418bbaf4ab0');
-    add_option('oacb_bot_name', 'Nina');
+    add_option('oacb_webhook_url');
+    add_option('oacb_bot_name', 'Jainil');
     add_option('oacb_welcome_message', 'Hi! What are you looking for?');
     add_option('oacb_chat_icon', OACB_PLUGIN_URL . 'public/chatbot-icon.png');
     add_option('oacb_bot_thumb', OACB_PLUGIN_URL . 'public/bot-thumb.png');
@@ -267,7 +267,7 @@ function oacb_handle_message(WP_REST_Request $request) {
         ]);
 
         if (is_wp_error($response)) {
-            throw new Exception(__('Service unavailable', 'n8n-chatbot'));
+            throw new Exception(__('Service unavailable', 'wordpress-n8n-chatbot-main'));
         }
 
         $body = wp_remote_retrieve_body($response);
@@ -275,7 +275,7 @@ function oacb_handle_message(WP_REST_Request $request) {
 
         return [
             'success' => true,
-            'response' => wp_kses_post($data['response'] ?? __('No response received', 'n8n-chatbot'))
+            'response' => wp_kses_post($data['response'] ?? __('No response received', 'wordpress-n8n-chatbot-main'))
         ];
 
     } catch (Exception $e) {
